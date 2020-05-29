@@ -34,4 +34,31 @@ app.post('/register',(req,res)=> {
 
 });
 
+app.post('/login',(req,res)=> {
+
+    User.findOne({email: req.body.email}, (err, user)=>{
+        if(!user){
+            return res.json({
+                loginSuccess:false,
+                message: "등록된 이메일이 없습니다."
+            });
+        }
+
+        user.comparePassword(req.body.password, (err, isMatch)=> {
+            if(!isMatch)
+            {
+                return res.json({
+                    loginSuccess: false,
+                    message: "비밀번호가 틀렸습니다."
+                });
+            }
+
+            user.generateToken((err, user)=> {
+                
+            })
+        });
+    });
+
+});
+
 app.listen(port,()=>console.log('성공')); 
