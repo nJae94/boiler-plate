@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const {User}= require("./models/User");
 
 //application/x--www-form-urlencoded 분석
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(bodyParser.json());
 
@@ -26,7 +26,7 @@ app.post('/register',(req,res)=> {
 
     const user = new User(req.body);
 
-    user.save((err,doc)=> {
+    user.save((err,userInfo)=> {
         if(err) return res.json({success: false, err});
 
         return res.status(200).json({success:true});
