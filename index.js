@@ -2,6 +2,7 @@ const express =require('express');
 const app = express();
 const port = 5000;
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const {User}= require("./models/User");
 
@@ -9,6 +10,7 @@ const {User}= require("./models/User");
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(bodyParser.json());
+app.use(cookieParser);
 
 //mongodb+srv://sunjae:<password>@boilerplate-thzoj.mongodb.net/test?retryWrites=true&w=majority
 
@@ -35,7 +37,7 @@ app.post('/register',(req,res)=> {
 });
 
 app.post('/login',(req,res)=> {
-
+  
     User.findOne({email: req.body.email}, (err, user)=>{
         if(!user){
             return res.json({
@@ -47,6 +49,7 @@ app.post('/login',(req,res)=> {
         user.comparePassword(req.body.password, (err, isMatch)=> {
             if(!isMatch)
             {
+            
                 return res.json({
                     loginSuccess: false,
                     message: "비밀번호가 틀렸습니다."
@@ -54,7 +57,11 @@ app.post('/login',(req,res)=> {
             }
 
             user.generateToken((err, user)=> {
+                if(err) return res.status(400).send(err);
                 
+                
+                //토큰 저장
+                res.cookie("cookie",user.token).status(200).json({loginSuccess:true, userId: user._id});
             })
         });
     });
