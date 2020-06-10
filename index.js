@@ -24,7 +24,7 @@ mongoose.connect('mongodb+srv://sunjae:wldmsl0516@boilerplate-thzoj.mongodb.net/
 
 app.get('/',(req,res) => res.send('hello its me'));
 
-app.post('api/users/register',(req,res)=> {
+app.post('/api/users/register',(req,res)=> {
 
     const user = new User(req.body);
 
@@ -36,7 +36,7 @@ app.post('api/users/register',(req,res)=> {
 
 });
 
-app.post('api/users/login',(req,res)=> {
+app.post('/api/users/login',(req,res)=> {
   
     User.findOne({email: req.body.email}, (err, user)=>{
         if(!user){
@@ -68,7 +68,7 @@ app.post('api/users/login',(req,res)=> {
 
 });
 
-app.use('api/users/auth',auth,(req,res)=> {
+app.get('/api/users/auth',auth,(req,res)=> {
 
     res.status(200).json({
 
@@ -83,6 +83,20 @@ app.use('api/users/auth',auth,(req,res)=> {
 
     })
 
+});
+
+app.get('/api/users/logout',auth,(req,res)=> {
+    console.log("테스트");
+
+    User.findOneAndUpdate({_id:req.user._id},
+        {token: ""},
+        (err,user)=> {
+            if(err) return res.json({success:false, err});
+
+            return res.status(200).send({
+                success:true
+            })
+        });
 });
 
 app.listen(port,()=>console.log('성공')); 
