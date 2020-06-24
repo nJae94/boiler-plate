@@ -48,7 +48,7 @@ export default function RegisterPage(props) {
                 props.history.push('/login');
             }
             else{
-                alert("회원가입 실패")
+                alert("회원가입 실패");
             }
         })
         
